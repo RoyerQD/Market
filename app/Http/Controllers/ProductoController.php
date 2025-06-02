@@ -2,8 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Categoria;
 use App\Models\Producto;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Route;
+use Inertia\Inertia;
 
 class ProductoController extends Controller
 {
@@ -13,6 +16,13 @@ class ProductoController extends Controller
     public function index()
     {
         //
+     $categorias = Categoria::with(['productos.usuario'])->get();
+
+    return Inertia::render('Welcome', [
+        'canLogin' => Route::has('login'),
+        'canRegister' => Route::has('register'),
+        'categorias' => $categorias,
+    ]);
     }
 
     /**
@@ -21,6 +31,7 @@ class ProductoController extends Controller
     public function create()
     {
         //
+        
     }
 
     /**
@@ -29,14 +40,28 @@ class ProductoController extends Controller
     public function store(Request $request)
     {
         //
+          $request->validate([
+            'nombre' => 'required',
+            'precio' => 'required|numeric',
+        ]);
+
+        Producto::create($request->only('nombre', 'precio'));
+
+        return redirect()->route('productos.index');
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(Producto $producto)
+    public function show($id)
     {
         //
+    $producto = Producto::with('usuario', 'categoria')->findOrFail($id);
+
+    return Inertia::render('DetallesProducto', [
+        'producto' => $producto,
+    ]);
+        
     }
 
     /**
@@ -53,6 +78,14 @@ class ProductoController extends Controller
     public function update(Request $request, Producto $producto)
     {
         //
+         $request->validate([
+            'nombre' => 'required',
+            'precio' => 'required|numeric',
+        ]);
+
+        $producto->update($request->only('nombre', 'precio'));
+
+        return redirect()->route('productos.index');
     }
 
     /**
@@ -61,5 +94,7 @@ class ProductoController extends Controller
     public function destroy(Producto $producto)
     {
         //
+                $producto->delete();
+        return redirect()->route('productos.index');
     }
 }
