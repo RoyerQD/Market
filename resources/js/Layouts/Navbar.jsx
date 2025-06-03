@@ -67,12 +67,10 @@ export default function Navbar({ header, children, auth }) {
                                     </a>
                                 </div>
                                 <nav className="flex space-x-4">
-                                    <Link href="#" className="text-black hover:text-[#4CAF50] transition-colors duration-300">
+                                    <Link href="/" className="text-black hover:text-[#4CAF50] transition-colors duration-300">
                                         Inicio
                                     </Link>
-                                    <Link href="#" className="text-black hover:text-[#4CAF50] transition-colors duration-300">
-                                        Productos
-                                    </Link>
+                                    
                                     <Link href="#" className="text-black hover:text-[#4CAF50] transition-colors duration-300">
                                         Soporte
                                     </Link>

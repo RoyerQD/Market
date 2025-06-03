@@ -12,15 +12,16 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('productos', function (Blueprint $table) {
-            $table->id('id_producto');
-            $table->foreignId('id_usuario')->constrained('users','id_usuario')->onDelete('cascade');
-            $table->foreignId('id_categoria')->nullable()->constrained('categorias', 'id_categoria')->onDelete('set null');
-            $table->string('nombre_producto');
-            $table->text('descripcion')->nullable();
-            $table->decimal('precio', 10, 2);
-            $table->string('condicion');
-            $table->timestamp('fecha_publicacion')->useCurrent();
-            $table->enum('estado_producto', ['Disponible', 'Vendido', 'Pausado'])->default('Disponible');
+        $table->id('id_producto');
+        $table->foreignId('id_usuario')->constrained('users','id_usuario')->onDelete('cascade');
+        $table->foreignId('id_categoria')->nullable()->constrained('categorias', 'id_categoria')->onDelete('set null');
+        $table->string('nombre_producto');
+        $table->text('descripcion')->nullable();
+        $table->decimal('precio', 10, 2);
+        $table->string('condicion');
+        $table->timestamp('fecha_publicacion')->nullable();
+        $table->enum('estado_producto', ['pendiente_pago', 'disponible', 'vendido', 'pausado'])->default('pendiente_pago');
+        $table->timestamps();
         });
     }
 
