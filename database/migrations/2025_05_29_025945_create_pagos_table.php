@@ -12,28 +12,15 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('pagos', function (Blueprint $table) {
-            $table->id('id_transaccion');
-            
-            // Clave foránea al pedido
-            $table->foreignId('id_pedido')
-                ->constrained('pedidos', 'id_pedido')
-                ->onDelete('cascade');
-
-            // Clave foránea al usuario (comprador)
-            $table->foreignId('id_usuario')
-                ->constrained('users', 'id_usuario')
-                ->onDelete('cascade');
-
-            $table->decimal('monto', 10, 2);
-            $table->timestamp('fecha_transaccion')->useCurrent();
-
-            $table->enum('estado_transaccion', [
-                'Exitosa', 'Fallida', 'Pendiente', 'Reembolsada'
-            ])->default('Pendiente');
-
-            $table->string('metodo_pago', 100);
-
-            $table->timestamps(); 
+        $table->id('id_pago');
+        $table->foreignId('id_usuario')->constrained('users', 'id_usuario')->onDelete('cascade');
+        $table->foreignId('id_producto')->unique()->constrained('productos', 'id_producto')->onDelete('cascade');
+        $table->enum('metodo_pago', ['paypal', 'otros']);
+        $table->enum('pago_por', ['subir_producto', 'publicidad']);
+        $table->decimal('monto', 8, 2);
+        $table->enum('estado_pago', ['pendiente', 'completado', 'cancelado', 'fallido'])->default('pendiente');
+        $table->timestamp('fecha_pago')->nullable();
+        $table->timestamps();
         });
     }
 

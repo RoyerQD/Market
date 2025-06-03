@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Categoria;
 use Illuminate\Http\Request;
+use Inertia\Inertia;
 
 class CategoriaController extends Controller
 {
@@ -46,6 +47,13 @@ class CategoriaController extends Controller
     {
         //
     }
+    public function crearProducto()
+    {
+        $categorias = Categoria::all(['id_categoria', 'nombre']);
+        return Inertia::render('CrearProductos', [
+            'categorias' => $categorias,
+        ]);
+}
 
     /**
      * Update the specified resource in storage.
