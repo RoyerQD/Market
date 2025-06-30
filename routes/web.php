@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\CategoriaController;
+use App\Http\Controllers\PagoController;
 use App\Http\Controllers\ProductoController;
 use App\Http\Controllers\ProfileController;
 use GuzzleHttp\Handler\Proxy;
@@ -26,6 +27,7 @@ Route::get('/SubirProducto',[CategoriaController::class, 'crearProducto'])->midd
 Route::middleware('auth')->group(function () {
     Route::post('/productos/iniciar-pago', [ProductoController::class, 'iniciarPago'])->name('productos.iniciar-pago');
     Route::post('/productos/completar-pago', [ProductoController::class, 'completarPago'])->name('productos.completar-pago');
+    Route::post('/api/mercadopago/preferencia', [PagoController::class, 'crearPreferencia']);
 });
 
 

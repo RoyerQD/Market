@@ -21,6 +21,7 @@ export default function DetallesProducto({ auth, producto }) {
                     </div>
                 )}
             </div>
+            
         </>
     );
 }

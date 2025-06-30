@@ -72,7 +72,7 @@ class ProductoController extends Controller
         'precio' => 'required|numeric',
         'condicion' => 'required',
         'id_categoria' => 'nullable|exists:categorias,id_categoria',
-        'metodo_pago' => 'required|in:paypal,otros',
+        'metodo_pago' => 'required|in:paypal,mercado_pago',
         'estado_pago' => 'required|in:completado,cancelado,fallido',
     ]);
 

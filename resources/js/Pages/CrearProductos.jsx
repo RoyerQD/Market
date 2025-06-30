@@ -2,12 +2,13 @@ import { useState } from "react";
 import PagoPaypal from "@/Components/PagoPaypal";
 import { PayPalScriptProvider } from "@paypal/react-paypal-js";
 import Navbar from "@/Layouts/Navbar";
+import PagoMercadoPago from "@/Components/PagoMercadoPago";
 
 export default function CrearProductos({ categorias, auth }) {
   const [producto, setProducto] = useState({
     nombre_producto: "",
     descripcion: "",
-    precio: "2.00",
+    precio: "3.00",
     condicion: "nuevo",
     id_categoria: "",
   });
@@ -90,9 +91,8 @@ export default function CrearProductos({ categorias, auth }) {
           </div>
         </form>
 
-        <PayPalScriptProvider options={{ "client-id": "AXoa7GuKdVGCbxn7n9Guq_x9_ttX_bb_5UfbMoY56X5psng454DFfFHsxxhSNkGbZyS_ZuvcrSqONJq1" }}>
+         <PayPalScriptProvider options={{ "client-id": "AXoa7GuKdVGCbxn7n9Guq_x9_ttX_bb_5UfbMoY56X5psng454DFfFHsxxhSNkGbZyS_ZuvcrSqONJq1" }}>
           <div className="p-6 max-w-md mx-auto">
-            {/* Solo mostrar el botón si el precio es válido */}
             {precioValido ? (
               <PagoPaypal user={auth.user} producto={producto} />
             ) : (
@@ -100,7 +100,15 @@ export default function CrearProductos({ categorias, auth }) {
             )}
           </div>
         </PayPalScriptProvider>
-      </div>
+
+        <div>
+          {precioValido ? (
+            <PagoMercadoPago user={auth.user} producto={producto} />
+          ) : (
+            <p className="text-red-500 font-semibold">Ingrese un precio válido para habilitar el pago.</p>
+          )}
+        </div>
+        </div>
     </>
   );
 }
