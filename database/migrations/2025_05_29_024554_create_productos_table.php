@@ -20,7 +20,7 @@ return new class extends Migration
         $table->decimal('precio', 10, 2);
         $table->string('condicion');
         $table->timestamp('fecha_publicacion')->nullable();
-        $table->enum('estado_producto', ['pendiente_pago', 'disponible', 'vendido', 'pausado'])->default('pendiente_pago');
+        $table->enum('estado_producto', ['disponible', 'vendido', 'pausado'])->default('Disponible');
         $table->timestamps();
         });
     }

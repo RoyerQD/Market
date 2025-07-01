@@ -15,5 +15,18 @@ class Pago extends Model
         'estado',
         'referencia_pago',
     ];
+
+    public function usuario()
+    {
+        return $this->belongsTo(User::class, 'id_usuario');
+    }
+    public function producto()
+    {
+        return $this->belongsTo(Producto::class, 'id_producto');
+    }
+    public function destacados()
+    {
+        return $this->hasMany(Destacados::class, 'id_pago', 'id_pago');
+    }
     
 }

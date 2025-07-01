@@ -28,9 +28,25 @@ class Producto extends Model
     {
         return $this->belongsTo(User::class, 'id_usuario');
     }
- 
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'id_usuario');
+    }
     public function categoria()
     {
         return $this->belongsTo(Categoria::class, 'id_categoria');
     }
+    public function destacados()
+    {
+        return $this->hasMany(Destacados::class, 'id_producto', 'id_producto');
+    }
+    public function fotos()
+    {
+        return $this->hasMany(fotos::class, 'id_producto', 'id_producto');
+    }
+    public function pagos()
+    {
+        return $this->hasMany(Pago::class, 'id_producto', 'id_producto');
+    }
+
 }

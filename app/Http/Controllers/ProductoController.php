@@ -17,15 +17,35 @@ class ProductoController extends Controller
      */
     public function index()
     {
-        //
-     $categorias = Categoria::with(['productos.usuario'])->get();
+        // Carga categorías con productos, usuarios y fotos
+        $categorias = Categoria::with([
+            'productos.usuario',
+            'productos.fotos' => function ($query) {
+                $query->limit(1);
+            },
+        ])->get();
 
-    return Inertia::render('Welcome', [
-        'canLogin' => Route::has('login'),
-        'canRegister' => Route::has('register'),
-        'categorias' => $categorias,
-    ]);
+        // Destacados: carga fotos también
+        $destacados = Producto::whereHas('destacados', function ($query) {
+            $query->where('fecha_inicio', '<=', now())
+                ->where('fecha_fin', '>=', now());
+        })
+        ->with([
+            'usuario',
+            'destacados',
+            'fotos' => function ($query) {
+                $query->limit(1);
+            },
+        ])->get();
+
+        return Inertia::render('Welcome', [
+            'canLogin' => Route::has('login'),
+            'canRegister' => Route::has('register'),
+            'categorias' => $categorias,
+            'destacados' => $destacados,
+        ]);
     }
+
 
     /**
      * Show the form for creating a new resource.
@@ -65,51 +85,73 @@ class ProductoController extends Controller
     
     public function completarPago(Request $request)
     {
-    $request->validate([
-        'id_usuario' => 'required|exists:users,id_usuario',
-        'nombre_producto' => 'required',
-        'descripcion' => 'nullable',
-        'precio' => 'required|numeric',
-        'condicion' => 'required',
-        'id_categoria' => 'nullable|exists:categorias,id_categoria',
-        'metodo_pago' => 'required|in:paypal,mercado_pago',
-        'estado_pago' => 'required|in:completado,cancelado,fallido',
-    ]);
-
-    if ($request->estado_pago !== 'completado') {
-        return response()->json(['error' => 'El pago no fue completado'], 400);
-    }
-
-    DB::beginTransaction();
-    try {
-        $producto = Producto::create([
-            'id_usuario' => $request->id_usuario,
-            'id_categoria' => $request->id_categoria,
-            'nombre_producto' => $request->nombre_producto,
-            'descripcion' => $request->descripcion,
-            'precio' => $request->precio,
-            'condicion' => $request->condicion,
-            'fecha_publicacion' => now(),
-            'estado_producto' => 'disponible',
+        $request->validate([
+            'id_usuario' => 'required|exists:users,id_usuario',
+            'nombre_producto' => 'required',
+            'descripcion' => 'nullable',
+            'precio' => 'required|numeric',
+            'condicion' => 'required',
+            'id_categoria' => 'nullable|exists:categorias,id_categoria',
+            'metodo_pago' => 'required|in:paypal,mercado_pago',
+            'estado_pago' => 'required|in:completado,cancelado,fallido',
+            'imagenes.*' => 'image|mimes:jpeg,png,jpg,gif|max:2048', 
         ]);
 
-        Pago::create([
-            'id_usuario' => $request->id_usuario,
-            'id_producto' => $producto->id_producto,
-            'metodo_pago' => $request->metodo_pago,
-            'pago_por' => 'subir_producto',
-            'monto' => 3.00,
-            'estado_pago' => 'completado',
-            'fecha_pago' => now(),
-        ]);
+        if ($request->estado_pago !== 'completado') {
+            return response()->json(['error' => 'El pago no fue completado'], 400);
+        }
 
-        DB::commit();
-        return response()->json(['success' => true, 'producto' => $producto]);
-    } catch (\Exception $e) {
-        DB::rollback();
-        return response()->json(['error' => 'Error al guardar producto o pago'], 500);
+        DB::beginTransaction();
+
+        try {
+            $producto = Producto::create([
+                'id_usuario' => $request->id_usuario,
+                'id_categoria' => $request->id_categoria,
+                'nombre_producto' => $request->nombre_producto,
+                'descripcion' => $request->descripcion,
+                'precio' => $request->precio,
+                'condicion' => $request->condicion,
+                'fecha_publicacion' => now(),
+                'estado_producto' => 'disponible',
+            ]);
+
+            Pago::create([
+                'id_usuario' => $request->id_usuario,
+                'id_producto' => $producto->id_producto,
+                'metodo_pago' => $request->metodo_pago,
+                'pago_por' => 'subir_producto',
+                'monto' => 3.00,
+                'estado_pago' => 'completado',
+                'fecha_pago' => now(),
+            ]);
+
+            // Guardar imágenes
+        if ($request->hasFile('imagenes')) {
+            $imagenes = is_array($request->file('imagenes'))
+                ? $request->file('imagenes')
+                : [$request->file('imagenes')];
+
+            foreach ($imagenes as $imagen) {
+                $ruta = $imagen->store('productos', 'public');
+
+                DB::table('fotos_producto')->insert([
+                    'id_producto' => $producto->id_producto,
+                    'ruta' => $ruta,
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ]);
+            }
+        }
+
+            DB::commit();
+
+            return response()->json(['success' => true, 'producto' => $producto]);
+        } catch (\Exception $e) {
+            DB::rollback();
+            return response()->json(['error' => 'Error al guardar producto, pago o imágenes', 'detalle' => $e->getMessage()], 500);
+        }
     }
-    }
+
 
     public function store(Request $request)
     {
@@ -130,12 +172,11 @@ class ProductoController extends Controller
     public function show($id)
     {
         //
-    $producto = Producto::with('usuario', 'categoria')->findOrFail($id);
+    $producto = Producto::with(['usuario', 'categoria', 'fotos'])->findOrFail($id);
 
     return Inertia::render('DetallesProducto', [
-        'producto' => $producto,
+        'producto' => $producto
     ]);
-        
     }
 
     /**

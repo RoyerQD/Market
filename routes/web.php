@@ -21,7 +21,9 @@ Route::get('/', [ProductoController::class, 'index'])->name('home');
 //         'phpVersion' => PHP_VERSION,
 //     ]);
 // })->name('home');->middleware(['auth', 'verified'])->name('home');
-
+Route::get('No-Found',function () {
+    return Inertia::render('NoFound');
+})->name('not-found');
 Route::get('/SubirProducto',[CategoriaController::class, 'crearProducto'])->middleware(['auth', 'verified'])->name('productos.create');
 
 Route::middleware('auth')->group(function () {
