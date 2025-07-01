@@ -57,7 +57,7 @@ export default function Main({ categorias }) {
               className="bg-white rounded-lg shadow-md overflow-hidden flex flex-col hover:scale-[1.02] transition"
             >
               <img
-                src={producto.imagen || '/imagenes/LogoGoodMarket.png'}
+                src={producto.imagen || '/images/LogoGoodMarket.png'}
                 alt={producto.nombre_producto}
                 className="w-full h-40 object-cover"
               />

@@ -7,7 +7,7 @@ export default function Navbar({ header, children, auth }) {
             {/* Logo y título */}
             <div className="flex items-center gap-2 hover:scale-105 transition-transform duration-300">
                <img
-                src="/imagenes/LogoGoodMarket.png"
+                src="/images/LogoGoodMarket.png"
                 alt="GoodBuy Market Logo"
                 className="h-10 w-auto lg:h-12"
                 />
