@@ -17,7 +17,12 @@ class DestacadosController extends Controller
 
         return response()->json($destacados);
     }
+        public function indexLista(){
+            // Devuelve todos los destacados, sin filtrar por fecha
+            $destacados = Destacados::with('producto')->get();
 
+            return response()->json($destacados);
+        }
     /**
      * Crear manualmente un destacado (opcional, normalmente se crea al confirmar pago)
      */
@@ -41,6 +46,7 @@ class DestacadosController extends Controller
             'destacado' => $destacado
         ]);
     }
+   
 
     /**
      * Mostrar los destacados de un producto específico

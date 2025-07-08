@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('pagos', function (Blueprint $table) {
         $table->id('id_pago');
         $table->foreignId('id_usuario')->constrained('users', 'id_usuario')->onDelete('cascade');
-        $table->foreignId('id_producto')->unique()->constrained('productos', 'id_producto')->onDelete('cascade');
+        $table->foreignId('id_producto')->constrained('productos', 'id_producto')->onDelete('cascade');
         $table->enum('metodo_pago', ['paypal', 'mercado_pago']);
         $table->enum('pago_por', ['subir_producto', 'publicidad']);
         $table->decimal('monto', 8, 2);

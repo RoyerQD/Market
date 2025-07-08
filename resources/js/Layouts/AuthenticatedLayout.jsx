@@ -21,26 +21,48 @@ export default function AuthenticatedLayout({ header, children }) {
                                 <Link href="/">
                                     <ApplicationLogo className="block h-9 w-auto fill-current text-gray-800" />
                                 </Link>
+                                
                             </div>
 
                             <div className="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
                                 <NavLink
-                                    href={route('dashboard')}
-                                    active={route().current('dashboard')}
+                                    href={route('profile.edit')}
+                                    active={route().current('profile.edit')}
                                 >
-                                    Dashboard
+                                    Perfil
                                 </NavLink>
+                            </div>
+                            <div className="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+                                <NavLink
+                                    href={route('productos.misVentas')}
+                                    active={route().current('productos.misVentas')}
+                                >
+                                    Mis Ventas
+                                </NavLink>
+                            </div>
+                                <div className="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
                                 <NavLink
                                     href={route('dashboard')}
                                     active={route().current('dashboard')}
                                 >
-                                    Mis Productos
+                                    Mis Pagos
                                 </NavLink>
                             </div>
+                                <div className="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+                                <NavLink
+                                    href={route('productos.misDestacados')}
+                                    active={route().current('productos.misDestacados')}
+                                >
+                                    Mis Destacados
+                                </NavLink>
+                            </div>
+                            <Link href="/" className="text-[#59bcb1] hover:text-[#e47b5e] font-medium transition-colors">
+                                Inicio
+                            </Link>
                         </div>
 
                         <div className="hidden sm:ms-6 sm:flex sm:items-center">
-                            <div className="relative ms-3">
+                            {/* <div className="relative ms-3">
                                 <Dropdown>
                                     <Dropdown.Trigger>
                                         <span className="inline-flex rounded-md">
@@ -81,7 +103,7 @@ export default function AuthenticatedLayout({ header, children }) {
                                         </Dropdown.Link>
                                     </Dropdown.Content>
                                 </Dropdown>
-                            </div>
+                            </div> */}
                         </div>
 
                         <div className="-me-2 flex items-center sm:hidden">

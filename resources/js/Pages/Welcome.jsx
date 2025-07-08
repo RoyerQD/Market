@@ -6,7 +6,7 @@ import Promos from '@/Components/Promos';
 export default function Welcome({ auth, categorias = [], destacados = [] }) {
   return (
     <>
-      <Head title="Welcome" />
+      <Head title="GoodByeMarket" />
       <Navbar auth={auth} />
 
       {/* Hero */}
