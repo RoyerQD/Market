@@ -10,4 +10,7 @@ export default defineConfig({
         }),
         react(),
     ],
+    define: {
+        'process.env.VITE_MP_PUBLIC_KEY': JSON.stringify(process.env.VITE_MP_PUBLIC_KEY),
+    },
 });

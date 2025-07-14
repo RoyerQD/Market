@@ -134,7 +134,7 @@ export default function Main({ categorias }) {
                       S/{producto.precio}
                     </p>
                     <p className="text-sm text-gray-600 mb-2">
-                      {producto.usuario.name}
+                      {producto.usuario.nombre}
                     </p>
                   </Link>
                 </div>

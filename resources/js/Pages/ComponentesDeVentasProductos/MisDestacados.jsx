@@ -4,7 +4,7 @@ import { useState } from 'react';
 import PagoPaypalDestacado from '@/Components/PagoPaypalDestacado';
 import { PayPalScriptProvider } from '@paypal/react-paypal-js';
 
-export default function MisDestacados({ productos, auth }) {
+export default function MisDestacados({ productos=[], auth }) {
   const [showModal, setShowModal] = useState(false);
   const [productoSeleccionado, setProductoSeleccionado] = useState(null);
   const [semanas, setSemanas] = useState(1);
@@ -50,12 +50,11 @@ export default function MisDestacados({ productos, auth }) {
               className="bg-white p-6 mb-4 rounded-lg shadow flex items-center justify-between"
             >
               <div className="flex items-center gap-4">
-                <img
-                  src={producto.imagen_url}
-                  alt={producto.nombre_producto}
-                  className="w-24 h-24 object-cover rounded"
-                />
-
+              <img
+                src={productos.imagen_url || '/default.jpg'}
+                alt={productos.nombre_producto}
+                className="w-20 h-20 object-cover rounded"
+              />
                 <div>
                   <h3 className="text-lg font-bold">{producto.nombre_producto}</h3>
                   <p className="text-green-600 font-semibold">S/ {producto.precio}</p>

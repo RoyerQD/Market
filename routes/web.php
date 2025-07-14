@@ -5,6 +5,7 @@ use App\Http\Controllers\DestacadosController;
 use App\Http\Controllers\PagoController;
 use App\Http\Controllers\ProductoController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\ReniecController;
 use App\Models\Destacados;
 use GuzzleHttp\Handler\Proxy;
 use Illuminate\Foundation\Application;
@@ -36,6 +37,13 @@ Route::middleware('auth')->group(function () {
     Route::post('/productos/iniciar-pago', [ProductoController::class, 'iniciarPago'])->name('productos.iniciar-pago');
     Route::post('/productos/completar-pago', [ProductoController::class, 'completarPago'])->name('productos.completar-pago');
     Route::post('/api/mercadopago/preferencia', [PagoController::class, 'crearPreferencia']);
+
+    // Rutas de retorno de Mercado Pago
+    Route::get('/productos/pago/success', [ProductoController::class, 'handlePagoSuccess'])->name('productos.pago.success');
+    Route::get('/productos/pago/failure', [ProductoController::class, 'handlePagoFailure'])->name('productos.pago.failure');
+    Route::get('/productos/pago/pending', [ProductoController::class, 'handlePagoPending'])->name('productos.pago.pending');
+    // Rutas de Mercado Pago
+    Route::post('/webhooks/mercadopago', [ProductoController::class, 'handleWebhook']);
 });
 
 //VISTA QUE UTILIZARE PARA VER EL PERFIL
@@ -43,12 +51,19 @@ Route::middleware(['auth', 'verified'])->get('/Dashboard', function () {
     return Inertia::render('Dashboard');
 })->name('dashboard');
 
+//AÑADIR PRODUCTOS GRATIS
+Route::post('/productos/agregar', [ProductoController::class, 'subirProductoGratis'])
+    ->middleware(['auth'])
+    ->name('productos.storeGratis');
+
 //VISTA QUE TENGO QUE MODIFICAR
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
+
+
 
 //VISTA DE DETALLES PRODUCTOS 
 Route::get('/producto/{id}', [ProductoController::class, 'show'])->name('producto.show');
@@ -60,4 +75,9 @@ Route::middleware(['auth'])->group(function () {
 Route::get('/mis-destacados', [ProductoController::class, 'misDestacados'])->name('productos.misDestacados');
 Route::post('/productos/agregar-destacado/{producto}', [ProductoController::class, 'agregarDestacado'])
     ->name('productos.agregarDestacado');
+
+//RUTAS PARA RENIEC Y SUNAT
+Route::get('/reniec/{dni}', [ReniecController::class, 'show']);
+Route::get('/sunat/{ruc}', [ReniecController::class, 'showRuc']);
+
 require __DIR__.'/auth.php';

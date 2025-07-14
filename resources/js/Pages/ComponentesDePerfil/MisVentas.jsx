@@ -18,11 +18,11 @@ export default function MisVentas({ ventas, totalGanancias, productosActivos, pr
       <h1 className="text-2xl font-bold mb-2">Mis Ventas</h1>
       <p className="mb-8">Gestiona tus productos y revisa tu historial de ventas</p>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+      {/* <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
         <ResumenVentas titulo="Ganancias Totales" valor={`$${totalGanancias}`} icono="$" color="text-green-400" />
         <ResumenVentas titulo="Productos Activos" valor={productosActivos} icono="👁️" />
         <ResumenVentas titulo="Productos Vendidos" valor={productosVendidos} icono="💬" />
-      </div>
+      </div> */}
 
       <div className="space-y-6">
         {ventas.map((venta) => (

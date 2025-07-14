@@ -1,7 +1,6 @@
 <?php
 
 return [
-
     /*
     |--------------------------------------------------------------------------
     | Third Party Services
@@ -13,6 +12,11 @@ return [
     | a conventional file to locate the various service credentials.
     |
     */
+
+    'mercadopago' => [
+        'token' => env('MP_ACCESS_TOKEN'),
+        'public_key' => env('MP_PUBLIC_KEY'),
+    ],
 
     'postmark' => [
         'token' => env('POSTMARK_TOKEN'),
@@ -34,5 +38,4 @@ return [
             'channel' => env('SLACK_BOT_USER_DEFAULT_CHANNEL'),
         ],
     ],
-
 ];

@@ -15,9 +15,9 @@
         @viteReactRefresh
         @vite(['resources/js/app.jsx', "resources/js/Pages/{$page['component']}.jsx"])
         @inertiaHead
-        <script src="https://sdk.mercadopago.com/js/v2"></script>
     </head>
     <body class="font-sans antialiased">
         @inertia
+        <script src="https://sdk.mercadopago.com/js/v2"></script>
     </body>
 </html>

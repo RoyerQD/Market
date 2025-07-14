@@ -106,7 +106,7 @@ export default function DetallesProducto({ producto = {},auth }) {
             {/* Información del vendedor */}
             <div className="border-t border-gray-200 pt-4">
               <h2 className="text-lg font-semibold mb-2">Información del vendedor</h2>
-              <p><span className="font-medium">Nombre:</span> {producto.usuario?.name || 'No especificado'}</p>
+              <p><span className="font-medium">Nombre:</span> {producto.usuario?.nombre || 'No especificado'}</p>
               <p><span className="font-medium">Miembro desde:</span> {producto.usuario?.fecha_registro || 'Fecha no disponible'}</p>
             </div>
           </div>

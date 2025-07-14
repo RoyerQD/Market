@@ -5,15 +5,16 @@ export default function Navbar({ header, children, auth }) {
     return (
         <header className="flex items-center justify-between py-4 px-6 bg-white shadow-md sticky top-0 z-50">
             {/* Logo y título */}
-            <div className="flex items-center gap-2 hover:scale-105 transition-transform duration-300">
+            <div className=" flex items-center gap-2 hover:scale-105 transition-transform duration-300">
                <img
                 src="/images/LogoGoodMarket.png"
                 alt="GoodBuy Market Logo"
                 className="h-10 w-auto lg:h-12"
                 />
-                <h1 className="text-2xl font-extrabold tracking-wide text-[#59bcb1]">
+                
+                <Link href="/"  className="text-2xl font-extrabold tracking-wide text-[#59bcb1]">
                     GoodBuy Market
-                </h1>
+                </Link>
             </div>
 
             {/* Barra de búsqueda + redes + nav */}
@@ -73,7 +74,7 @@ export default function Navbar({ header, children, auth }) {
                         <Dropdown>
                             <Dropdown.Trigger>
                                 <button className="inline-flex items-center px-3 py-2 text-sm text-[#59bcb1] hover:text-[#e47b5e] border rounded-full border-[#59bcb1] shadow-sm hover:shadow-md transition">
-                                    {auth.user.name}
+                                    {auth.user.nombre}
                                     <svg
                                         className="ml-2 h-4 w-4"
                                         xmlns="http://www.w3.org/2000/svg"

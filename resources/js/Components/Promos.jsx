@@ -13,7 +13,7 @@ export default function Promos({ destacados }) {
 
   if (!tieneDestacados) {
     return (
-      <section className="py-20 bg-gradient-to-r from-[#335350] to-[#1f3d3a] text-center text-white">
+      <section className="py-20 bg-gradient-to-br from-[#1a2a4f] to-[#203668] text-center text-white">
         <div className="container mx-auto px-4">
           <h2 className="text-3xl md:text-4xl font-bold mb-4">
             ¿Quieres que tu producto aparezca aquí?
