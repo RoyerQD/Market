@@ -50,11 +50,12 @@ export default function MisDestacados({ productos=[], auth }) {
               className="bg-white p-6 mb-4 rounded-lg shadow flex items-center justify-between"
             >
               <div className="flex items-center gap-4">
-              <img
-                src={productos.imagen_url || '/default.jpg'}
-                alt={productos.nombre_producto}
-                className="w-20 h-20 object-cover rounded"
-              />
+                <img
+                  src={producto.imagen_url || '/default.jpg'}
+                  alt={producto.nombre_producto}
+                  className="w-20 h-20 object-cover rounded"
+                />
+
                 <div>
                   <h3 className="text-lg font-bold">{producto.nombre_producto}</h3>
                   <p className="text-green-600 font-semibold">S/ {producto.precio}</p>

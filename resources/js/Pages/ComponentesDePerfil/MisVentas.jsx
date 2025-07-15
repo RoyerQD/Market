@@ -14,7 +14,7 @@ export default function MisVentas({ ventas, totalGanancias, productosActivos, pr
         }
     >
     <Head title="Mis Ventas" />
-    <div className="container mx-auto p-8 text-white">
+    <div className="container mx-auto text-black p-6">
       <h1 className="text-2xl font-bold mb-2">Mis Ventas</h1>
       <p className="mb-8">Gestiona tus productos y revisa tu historial de ventas</p>
 

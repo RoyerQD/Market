@@ -4,10 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Pago;
 use Illuminate\Http\Request;
-use MercadoPago\SDK;
-use MercadoPago\Preference;
-use MercadoPago\Item;
-
+use Inertia\Inertia;
 
 class PagoController extends Controller
 {
@@ -16,31 +13,31 @@ class PagoController extends Controller
      */
  public function crearPreferencia(Request $request)
 {
-  \MercadoPago\SDK::setAccessToken(env('MERCADO_PAGO_ACCESS_TOKEN'));
 
-    $preference = new Preference();
-
-    $item = new Item();
-    $item->title = $request->descripcion ?? 'Pago por publicación';
-    $item->quantity = 1;
-    $item->unit_price = (float) $request->precio;
-
-    $preference->items = [$item];
-    $preference->back_urls = [
-        'success' => url('/pago-exitoso'),
-        'failure' => url('/pago-fallido'),
-        'pending' => url('/pago-pendiente'),
-    ];
-    $preference->auto_return = "approved";
-
-    $preference->save();
-
-    return response()->json(['preference_id' => $preference->id]);
 }
-    public function index()
-    {
-        //
-    }
+public function index()
+{
+    $pagos = Pago::select(
+            'pagos.id_pago',
+            'pagos.metodo_pago',
+            'pagos.pago_por',
+            'pagos.monto',
+            'pagos.estado_pago',
+            'pagos.fecha_pago',
+            'productos.nombre_producto'
+        )
+        ->join('productos', 'pagos.id_producto', '=', 'productos.id_producto')
+        ->where('pagos.id_usuario', auth()->id()) // Opcional: filtra solo del usuario logueado
+        ->orderByDesc('pagos.fecha_pago')
+        ->get();
+
+    return Inertia::render('Pagos/Index', [
+        'pagos' => $pagos,
+        'auth' => [
+            'user' => auth()->user(),
+        ],
+    ]);
+}
 
     /**
      * Show the form for creating a new resource.

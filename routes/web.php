@@ -62,8 +62,8 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
-
-
+//VISTAS PARA MIS PAGOS
+Route::get('/pagos', [PagoController::class, 'index'])->name('pagos.index');
 
 //VISTA DE DETALLES PRODUCTOS 
 Route::get('/producto/{id}', [ProductoController::class, 'show'])->name('producto.show');
