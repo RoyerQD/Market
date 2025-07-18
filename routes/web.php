@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\CategoriaController;
 use App\Http\Controllers\DestacadosController;
+use App\Http\Controllers\LegadalesController;
 use App\Http\Controllers\PagoController;
 use App\Http\Controllers\ProductoController;
 use App\Http\Controllers\ProfileController;
@@ -79,5 +80,12 @@ Route::post('/productos/agregar-destacado/{producto}', [ProductoController::clas
 //RUTAS PARA RENIEC Y SUNAT
 Route::get('/reniec/{dni}', [ReniecController::class, 'show']);
 Route::get('/sunat/{ruc}', [ReniecController::class, 'showRuc']);
+
+Route::get('/TerminosCondiciones',[LegadalesController::class, 'Terminos'])
+    ->name('legal.terminosCondiciones');
+Route::get('/PoliticasPrivacidad',[LegadalesController::class, 'Politica'])
+    ->name('legal.politicasPrivacidad');
+Route::get('/NormasComunidad',[LegadalesController::class, 'Comunidad'])
+    ->name('legal.normasComunidad');
 
 require __DIR__.'/auth.php';

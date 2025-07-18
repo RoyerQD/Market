@@ -48,17 +48,16 @@ export default function Welcome({ auth, categorias = [], destacados = [] }) {
         <div>
           <h3 className="text-lg font-semibold mb-4">Legal</h3>
           <ul className="space-y-2 text-sm">
-            <li><a href="#" className="hover:text-gray-300">Términos y Condiciones</a></li>
-            <li><a href="#" className="hover:text-gray-300">Política de Privacidad</a></li>
-            <li><a href="#" className="hover:text-gray-300">Política de Cookies</a></li>
-            <li><a href="#" className="hover:text-gray-300">Normas de la Comunidad</a></li>
+            <li><a href="/TerminosCondiciones" className="hover:text-gray-300">Términos y Condiciones</a></li>
+            <li><a href="/PoliticasPrivacidad" className="hover:text-gray-300">Política de Privacidad</a></li>
+            <li><a href="/NormasComunidad" className="hover:text-gray-300">Normas de la Comunidad</a></li>
           </ul>
         </div>
 
         {/* Contacto */}
         <div>
           <h3 className="text-lg font-semibold mb-4">Contacto</h3>
-          <p className="text-sm">Correo: soporte@goodbuymarket.shop</p>
+          <p className="text-sm">Correo: GoodBuyMarket@gmail.com</p>
           <p className="text-sm">Tel: +51 123 456 789</p>
           <p className="text-sm">Dirección: Cusco, Perú</p>
         </div>
