@@ -5,6 +5,7 @@ import TextInput from '@/Components/TextInput';
 import { Head, Link, useForm } from '@inertiajs/react';
 import axios from 'axios';
 import { useState } from 'react';
+import Checkbox from '@/Components/Checkbox';
 
 export default function Register() {
     const { data, setData, post, processing, errors, reset } = useForm({
@@ -20,9 +21,9 @@ export default function Register() {
         password_confirmation: '',
     });
 
-    const [locked, setLocked] = useState(false);
     const [consultandoRuc, setConsultandoRuc] = useState(false);
     const [datosRuc, setDatosRuc] = useState(null);
+    const [acceptedTerms, setAcceptedTerms] = useState(false);
 
     const handleRucConsulta = async () => {
         if (data.ruc.length !== 11) {
@@ -59,9 +60,14 @@ export default function Register() {
     const submit = (e) => {
         e.preventDefault();
         if (!datosRuc) {
-            alert('Por favor, consulte y valide el RUC antes de continuar.');
+            alert('Por favor, consulta y valida el RUC antes de continuar.');
             return;
         }
+        if (!acceptedTerms) {
+            alert('Debe aceptar los términos y condiciones.');
+            return;
+        }
+
         post(route('register'), {
             onFinish: () => reset('password', 'password_confirmation'),
         });
@@ -89,13 +95,19 @@ export default function Register() {
                                 Crear una cuenta
                             </h2>
                             <p className="mt-2 text-lg text-gray-600">
-                                Únete a GoodBuy Market y empieza a comprar y vender.
+                                Para registrarte en GoodBuy Market es necesario confirmar tu RUC y verificar tus datos reales.
+                                <br />
+                                Esto garantiza un entorno seguro y confiable para todos.
                             </p>
                         </div>
 
                         <form onSubmit={submit} className="space-y-8">
-                            {/* RUC Section - Ahora primero y obligatorio */}
-                            <div className="bg-gray-50 p-6 rounded-xl border  border-gray-200">
+                            {/* RUC Section */}
+                            <div className="bg-gray-50 p-6 rounded-xl border border-gray-200">
+                                <p className="mb-4 text-gray-600 text-sm">
+                                    Primero ingresa tu RUC y verifica su estado en SUNAT.
+                                    Es requisito estar activo y habido para operar en GoodBuy Market.
+                                </p>
                                 <div className="flex gap-4 items-start">
                                     <div className="flex-1">
                                         <InputLabel htmlFor="ruc" value="RUC" className="text-lg" />
@@ -116,8 +128,7 @@ export default function Register() {
                                         {datosRuc && (
                                             <div className="mt-3 p-3 bg-green-50 rounded-lg border border-green-200">
                                                 <p className="text-sm text-gray-600">
-                                                    Estado: <span className="font-medium text-green-600">{datosRuc.estado}</span>
-                                                    <br />
+                                                    Estado: <span className="font-medium text-green-600">{datosRuc.estado}</span><br/>
                                                     Condición: <span className="font-medium">{datosRuc.condicion}</span>
                                                 </p>
                                             </div>
@@ -147,162 +158,180 @@ export default function Register() {
                                 </div>
                             </div>
 
-                            {/* Personal Information */}
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                                <div className="col-span-2">
-                                    <InputLabel htmlFor="dni" value="DNI" className="text-lg" />
-                                    <TextInput
-                                        id="dni"
-                                        name="dni"
-                                        value={data.dni}
-                                        maxLength="8"
-                                        onChange={(e) => {
-                                            const newDni = e.target.value.replace(/\D/g, '');
-                                            setData('dni', newDni);
-                                        }}
-                                        className="mt-2 block w-full text-lg"
-                                        placeholder="Ingresa tu DNI"
-                                    />
-                                    <InputError message={errors.dni} className="mt-2" />
-                                </div>
+                            {/* Campos adicionales solo si el RUC es válido */}
+                            {datosRuc && (
+                                <>
+                                    {/* Personal Information */}
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                                        <div className="col-span-2">
+                                            <InputLabel htmlFor="dni" value="DNI" className="text-lg" />
+                                            <TextInput
+                                                id="dni"
+                                                name="dni"
+                                                value={data.dni}
+                                                maxLength="8"
+                                                onChange={(e) => {
+                                                    const newDni = e.target.value.replace(/\D/g, '');
+                                                    setData('dni', newDni);
+                                                }}
+                                                className="mt-2 block w-full text-lg"
+                                                placeholder="Ingresa tu DNI"
+                                            />
+                                            <p className="mt-1 text-xs text-gray-500">
+                                                Los datos en este campo deben coincidir con tus documentos.
+                                                Si no coinciden, no podremos aprobar tu registro.
+                                            </p>
+                                            <InputError message={errors.dni} className="mt-2" />
+                                        </div>
 
-                                <div>
-                                    <InputLabel htmlFor="nombre" value="Nombre(s)" className="text-lg" />
-                                    <TextInput
-                                        id="nombre"
-                                        name="nombre"
-                                        value={data.nombre}
-                                        className="mt-2 block w-full text-lg"
-                                        onChange={(e) => setData('nombre', e.target.value)}
-                                        required
-                                    />
-                                    <InputError message={errors.nombre} className="mt-2" />
-                                </div>
+                                        <div>
+                                            <InputLabel htmlFor="nombre" value="Nombre(s)" className="text-lg" />
+                                            <TextInput
+                                                id="nombre"
+                                                name="nombre"
+                                                value={data.nombre}
+                                                className="mt-2 block w-full text-lg"
+                                                onChange={(e) => setData('nombre', e.target.value)}
+                                                required
+                                            />
+                                            <InputError message={errors.nombre} className="mt-2" />
+                                        </div>
 
-                                <div>
-                                    <InputLabel htmlFor="apellido_paterno" value="Apellido Paterno" className="text-lg" />
-                                    <TextInput
-                                        id="apellido_paterno"
-                                        name="apellido_paterno"
-                                        value={data.apellido_paterno}
-                                        className="mt-2 block w-full text-lg"
-                                        onChange={(e) => setData('apellido_paterno', e.target.value)}
-                                        required
-                                    />
-                                    <InputError message={errors.apellido_paterno} className="mt-2" />
-                                </div>
+                                        <div>
+                                            <InputLabel htmlFor="apellido_paterno" value="Apellido Paterno" className="text-lg" />
+                                            <TextInput
+                                                id="apellido_paterno"
+                                                name="apellido_paterno"
+                                                value={data.apellido_paterno}
+                                                className="mt-2 block w-full text-lg"
+                                                onChange={(e) => setData('apellido_paterno', e.target.value)}
+                                                required
+                                            />
+                                            <InputError message={errors.apellido_paterno} className="mt-2" />
+                                        </div>
 
-                                <div>
-                                    <InputLabel htmlFor="apellido_materno" value="Apellido Materno" className="text-lg" />
-                                    <TextInput
-                                        id="apellido_materno"
-                                        name="apellido_materno"
-                                        value={data.apellido_materno}
-                                        className="mt-2 block w-full text-lg"
-                                        onChange={(e) => setData('apellido_materno', e.target.value)}
-                                        required
-                                    />
-                                    <InputError message={errors.apellido_materno} className="mt-2" />
-                                </div>
+                                        <div>
+                                            <InputLabel htmlFor="apellido_materno" value="Apellido Materno" className="text-lg" />
+                                            <TextInput
+                                                id="apellido_materno"
+                                                name="apellido_materno"
+                                                value={data.apellido_materno}
+                                                className="mt-2 block w-full text-lg"
+                                                onChange={(e) => setData('apellido_materno', e.target.value)}
+                                                required
+                                            />
+                                            <InputError message={errors.apellido_materno} className="mt-2" />
+                                        </div>
 
-                                <div>
-                                    <InputLabel htmlFor="telefono" value="Teléfono" className="text-lg" />
-                                    <TextInput
-                                        id="telefono"
-                                        type="tel"
-                                        name="telefono"
-                                        value={data.telefono}
-                                        className="mt-2 block w-full text-lg"
-                                        onChange={(e) => setData('telefono', e.target.value.replace(/\D/g, ''))}
-                                        maxLength="9"
-                                        required
-                                        placeholder="Ejemplo: 987654321"
-                                    />
-                                    <InputError message={errors.telefono} className="mt-2" />
-                                </div>
-                            </div>
-
-                            <div className="bg-gray-50 p-6 rounded-xl border border-gray-200">
-                                <div>
-                                    <InputLabel htmlFor="direccion" value="Dirección" className="text-lg" />
-                                    <TextInput
-                                        id="direccion"
-                                        name="direccion"
-                                        // value={data.direccion}
-                                        className="mt-2 block w-full text-lg"
-                                        onChange={(e) => setData('direccion', e.target.value)}
-                                        required
-                                        placeholder="Tu dirección fiscal"
-                                    />
-                                    <InputError message={errors.direccion} className="mt-2" />
-                                </div>
-                            </div>
-
-                            {/* Account Information */}
-                            <div className="bg-gray-50 p-6 rounded-xl border border-gray-200">
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                                    <div className="col-span-2">
-                                        <InputLabel htmlFor="email" value="Email" className="text-lg" />
-                                        <TextInput
-                                            id="email"
-                                            type="email"
-                                            name="email"
-                                            value={data.email}
-                                            className="mt-2 block w-full text-lg"
-                                            onChange={(e) => setData('email', e.target.value)}
-                                            required
-                                            placeholder="tu@email.com"
-                                        />
-                                        <InputError message={errors.email} className="mt-2" />
+                                        <div>
+                                            <InputLabel htmlFor="telefono" value="Teléfono" className="text-lg" />
+                                            <TextInput
+                                                id="telefono"
+                                                type="tel"
+                                                name="telefono"
+                                                value={data.telefono}
+                                                className="mt-2 block w-full text-lg"
+                                                onChange={(e) => setData('telefono', e.target.value.replace(/\D/g, ''))}
+                                                maxLength="9"
+                                                required
+                                                placeholder="Ejemplo: 987654321"
+                                            />
+                                            <InputError message={errors.telefono} className="mt-2" />
+                                        </div>
                                     </div>
 
-                                    <div>
-                                        <InputLabel htmlFor="password" value="Contraseña" className="text-lg" />
+                                    <div className="bg-gray-50 p-6 rounded-xl border border-gray-200">
+                                        <InputLabel htmlFor="direccion" value="Dirección" className="text-lg" />
                                         <TextInput
-                                            id="password"
-                                            type="password"
-                                            name="password"
-                                            value={data.password}
+                                            id="direccion"
+                                            name="direccion"
+                                            value={data.direccion}
                                             className="mt-2 block w-full text-lg"
-                                            onChange={(e) => setData('password', e.target.value)}
+                                            onChange={(e) => setData('direccion', e.target.value)}
                                             required
-                                            autoComplete="new-password"
+                                            placeholder="Tu dirección fiscal"
                                         />
-                                        <InputError message={errors.password} className="mt-2" />
+                                        <InputError message={errors.direccion} className="mt-2" />
                                     </div>
 
-                                    <div>
-                                        <InputLabel htmlFor="password_confirmation" value="Confirmar Contraseña" className="text-lg" />
-                                        <TextInput
-                                            id="password_confirmation"
-                                            type="password"
-                                            name="password_confirmation"
-                                            value={data.password_confirmation}
-                                            className="mt-2 block w-full text-lg"
-                                            onChange={(e) => setData('password_confirmation', e.target.value)}
-                                            required
-                                            autoComplete="new-password"
-                                        />
-                                        <InputError message={errors.password_confirmation} className="mt-2" />
+                                    {/* Account Information */}
+                                    <div className="bg-gray-50 p-6 rounded-xl border border-gray-200">
+                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                                            <div className="col-span-2">
+                                                <InputLabel htmlFor="email" value="Email" className="text-lg" />
+                                                <TextInput
+                                                    id="email"
+                                                    type="email"
+                                                    name="email"
+                                                    value={data.email}
+                                                    className="mt-2 block w-full text-lg"
+                                                    onChange={(e) => setData('email', e.target.value)}
+                                                    required
+                                                    placeholder="tu@email.com"
+                                                />
+                                                <InputError message={errors.email} className="mt-2" />
+                                            </div>
+
+                                            <div>
+                                                <InputLabel htmlFor="password" value="Contraseña" className="text-lg" />
+                                                <TextInput
+                                                    id="password"
+                                                    type="password"
+                                                    name="password"
+                                                    value={data.password}
+                                                    className="mt-2 block w-full text-lg"
+                                                    onChange={(e) => setData('password', e.target.value)}
+                                                    required
+                                                    autoComplete="new-password"
+                                                />
+                                                <InputError message={errors.password} className="mt-2" />
+                                            </div>
+
+                                            <div>
+                                                <InputLabel htmlFor="password_confirmation" value="Confirmar Contraseña" className="text-lg" />
+                                                <TextInput
+                                                    id="password_confirmation"
+                                                    type="password"
+                                                    name="password_confirmation"
+                                                    value={data.password_confirmation}
+                                                    className="mt-2 block w-full text-lg"
+                                                    onChange={(e) => setData('password_confirmation', e.target.value)}
+                                                    required
+                                                    autoComplete="new-password"
+                                                />
+                                                <InputError message={errors.password_confirmation} className="mt-2" />
+                                            </div>
+                                        </div>
                                     </div>
-                                </div>
-                            </div>
 
-                            <div className="flex items-center justify-between pt-6">
-                                <Link
-                                    href={route('login')}
-                                    className="text-lg text-blue-600 hover:text-blue-800 font-medium"
-                                >
-                                    ¿Ya tienes cuenta? Inicia sesión
-                                </Link>
+                                    {/* Terms and Conditions */}
+                                    <label className="flex items-center space-x-2 mt-4">
+                                        <Checkbox
+                                            checked={acceptedTerms}
+                                            onChange={(e) => setAcceptedTerms(e.target.checked)}
+                                        />
+                                        <span className="text-sm text-gray-700">
+                                            Acepto los <Link href="/TerminosCondiciones" className="text-blue-600 underline">términos y condiciones</Link> de GoodBuy Market.
+                                        </span>
+                                    </label>
 
-                                <PrimaryButton 
-                                    className="px-8 py-3 text-lg" 
-                                    disabled={processing || !datosRuc}
-                                >
-                                    {processing ? 'Registrando...' : 'Crear Cuenta'}
-                                </PrimaryButton>
-                            </div>
+                                    <div className="flex items-center justify-between pt-6">
+                                        <Link
+                                            href={route('login')}
+                                            className="text-lg text-blue-600 hover:text-blue-800 font-medium"
+                                        >
+                                            ¿Ya tienes cuenta? Inicia sesión
+                                        </Link>
+
+                                        <PrimaryButton 
+                                            className="px-8 py-3 text-lg" 
+                                            disabled={processing || !datosRuc || !acceptedTerms}
+                                        >
+                                            {processing ? 'Registrando...' : 'Crear Cuenta'}
+                                        </PrimaryButton>
+                                    </div>
+                                </>
+                            )}
                         </form>
                     </div>
                 </div>

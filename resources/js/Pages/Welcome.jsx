@@ -7,7 +7,7 @@ import { FaFacebookF, FaInstagram, FaTwitter } from 'react-icons/fa';
 export default function Welcome({ auth, categorias = [], destacados = [] }) {
   return (
     <>
-      <Head title="GoodByeMarket" />
+      <Head title="" />
       <Navbar auth={auth} />
 
       {/* Hero */}

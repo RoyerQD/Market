@@ -23,7 +23,7 @@ export default function Promos({ destacados }) {
             Sé el primero en aparecer en la sección de productos destacados.
           </p>
           <Link
-            href="not-found"
+            href="/mis-destacados"
             className="bg-[#e47b5e] text-white px-6 py-3 rounded-full hover:bg-[#c45f48] transition"
           >
             Promociona tu producto ahora

@@ -63,19 +63,24 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
-//VISTAS PARA MIS PAGOS
-Route::get('/pagos', [PagoController::class, 'index'])->name('pagos.index');
+
 
 //VISTA DE DETALLES PRODUCTOS 
 Route::get('/producto/{id}', [ProductoController::class, 'show'])->name('producto.show');
 
-//VISTA DETALLES MIS VENTAS 
+
 Route::middleware(['auth'])->group(function () {
+    //VISTA DETALLES MIS VENTAS 
     Route::get('/mis-ventas', [ProductoController::class, 'misVentas'])->name('productos.misVentas');
-});
-Route::get('/mis-destacados', [ProductoController::class, 'misDestacados'])->name('productos.misDestacados');
-Route::post('/productos/agregar-destacado/{producto}', [ProductoController::class, 'agregarDestacado'])
+    //VISTA PRODUCTOS DESTACADOS
+    Route::get('/mis-destacados', [ProductoController::class, 'misDestacados'])->name('productos.misDestacados');
+    Route::post('/productos/agregar-destacado/{producto}', [ProductoController::class, 'agregarDestacado'])
     ->name('productos.agregarDestacado');
+    //VISTAS PARA MIS PAGOS
+    Route::get('/pagos', [PagoController::class, 'index'])->name('pagos.index');
+});
+
+
 
 //RUTAS PARA RENIEC Y SUNAT
 Route::get('/reniec/{dni}', [ReniecController::class, 'show']);

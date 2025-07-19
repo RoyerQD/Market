@@ -345,7 +345,7 @@ export default function CrearProductos({ categorias, auth }) {
                 </div>
 
                 {/* Información Importante */}
-                <div className="bg-white rounded-2xl shadow-xl overflow-hidden">
+                {/* <div className="bg-white rounded-2xl shadow-xl overflow-hidden">
                   <div className="p-6">
                     <h2 className="text-xl font-bold text-gray-900 mb-4">¿Por qué S/ 3.00?</h2>
                     <div className="space-y-4">
@@ -383,7 +383,7 @@ export default function CrearProductos({ categorias, auth }) {
                       </div>
                     </div>
                   </div>
-                </div>
+                </div> */}
               </div>
             </div>
           </div>

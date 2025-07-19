@@ -47,7 +47,7 @@ class RegisteredUserController extends Controller
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
         ],[
             'dni.unique' => 'Este DNI ya está registrado.',
-            'dni.unique' => 'Este RUC ya está registrado.',
+            'ruc.unique' => 'Este RUC ya está registrado.',
             'email.unique' => 'Este correo ya está registrado.',
         ]);
 
