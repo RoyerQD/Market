@@ -20,7 +20,7 @@ export default function Navbar({ header, children, auth }) {
             {/* Barra de búsqueda + redes + nav */}
             <div className="flex items-center gap-4">
                 {/* Buscar */}
-                <div className="relative">
+                {/* <div className="relative">
                     <input
                         type="text"
                         placeholder="Buscar productos..."
@@ -40,7 +40,7 @@ export default function Navbar({ header, children, auth }) {
                             d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
                         />
                     </svg>
-                </div>
+                </div> */}
 
                 {/* Redes */}
                 <div className="flex gap-3">
@@ -66,7 +66,7 @@ export default function Navbar({ header, children, auth }) {
                     <Link href="/" className="text-[#59bcb1] hover:text-[#e47b5e] font-medium transition-colors">
                         Inicio
                     </Link>
-                    <Link href="#" className="text-[#59bcb1] hover:text-[#e47b5e] font-medium transition-colors">
+                    <Link href={route('soporte')} className="text-[#59bcb1] hover:text-[#e47b5e] font-medium transition-colors">
                         Soporte
                     </Link>
 

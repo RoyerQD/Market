@@ -25,7 +25,7 @@ export default function Welcome({ auth, categorias = [], destacados = [] }) {
         <div>
           <h2 className="text-xl font-bold mb-4">GoodBuy Market</h2>
           <p className="text-sm">&copy; 2025 GoodBuy Market. Todos los derechos reservados.</p>
-          <a href="#" className="text-sm underline hover:text-gray-300">Libro de Reclamaciones</a>
+          <a href="/libro-reclamaciones" className="text-sm underline hover:text-gray-300">Libro de Reclamaciones</a>
         </div>
 
         {/* Redes Sociales */}

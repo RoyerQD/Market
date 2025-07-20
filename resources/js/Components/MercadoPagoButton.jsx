@@ -1,148 +1,86 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import axios from "axios";
-import PropTypes from "prop-types";
 
-export default function MercadoPagoButton({ user, producto }) {
+export default function MercadoPagoButton({ user, producto, disabled = false }) {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  const isValidImageFile = (file) => {
-    const validTypes = ['image/jpeg', 'image/png', 'image/jpg', 'image/gif'];
-    return file instanceof File && validTypes.includes(file.type);
-  };
-
   const handlePago = async () => {
+    if (disabled) return;
+    
     try {
       setIsLoading(true);
       setError(null);
 
       const formData = new FormData();
-      
-      // Validate and append basic product data
       formData.append('id_usuario', user.id_usuario);
       formData.append('nombre_producto', producto.nombre_producto);
       formData.append('descripcion', producto.descripcion || '');
-      formData.append('precio', parseFloat(producto.precio));
+      formData.append('precio', producto.precio);
       formData.append('condicion', producto.condicion);
       formData.append('id_categoria', producto.id_categoria);
       formData.append('metodo_pago', 'mercado_pago');
-      formData.append('estado_pago', 'completado');
 
-      // Validate and append images
+      // Agregar las imágenes al FormData
       if (producto.imagenes && producto.imagenes.length > 0) {
-        const validImages = producto.imagenes.filter(isValidImageFile);
-        
-        if (validImages.length === 0) {
-          throw new Error('No se encontraron imágenes válidas para subir');
-        }
-
-        validImages.forEach((imagen, index) => {
+        producto.imagenes.forEach((imagen, index) => {
           formData.append(`imagenes[${index}]`, imagen);
         });
       }
 
-      // Debug: Log form data
-      for (let [key, value] of formData.entries()) {
-        console.log(`${key}:`, value instanceof File ? `File: ${value.name}` : value);
-      }
-
-      const res = await axios.post("/productos/completar-pago", formData, {
+      const response = await axios.post("/productos/completar-pago", formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
           'Accept': 'application/json',
         }
       });
 
-      if (res.data.init_point) {
-        const publicKey = import.meta.env.VITE_MP_PUBLIC_KEY;
-        console.log('Public Key:', publicKey); // Para debugging
-        
-        if (!publicKey) {
-          throw new Error('La clave pública de Mercado Pago no está configurada');
-        }
-
-        const mp = new window.MercadoPago(publicKey, {
-          locale: 'es-PE'
-        });
-
-        mp.checkout({
-          preference: {
-            id: res.data.preference_id
-          },
-          render: {
-            container: '.cho-container',
-            label: 'Pagar',
-          },
-          theme: {
-            elementsColor: '#4F46E5',
-            headerColor: '#4F46E5',
-          },
-          autoOpen: true,
-          modal: true
-        });
+      if (response.data.init_point) {
+        window.location.href = response.data.init_point;
       } else {
-        throw new Error("No se recibió el punto de inicio del pago");
+        throw new Error('No se recibió el punto de inicio del pago');
       }
     } catch (error) {
-      console.error("Error creando preferencia:", error);
-      
-      // Mostrar información detallada del error
-      const errorDetail = error.response?.data?.error || error.response?.data?.message;
-      const errorMessage = errorDetail
-        ? `Error: ${errorDetail}`
-        : error.message || "Hubo un error al procesar el pago. Por favor, intente nuevamente.";
-      
-      console.log('Detalles completos del error:', {
-        status: error.response?.status,
-        statusText: error.response?.statusText,
-        data: error.response?.data,
-        headers: error.response?.headers
-      });
-      
-      setError(errorMessage);
+      console.error('Error al procesar el pago:', error);
+      setError(error.response?.data?.message || error.message);
     } finally {
       setIsLoading(false);
     }
   };
 
-  useEffect(() => {
-    console.log('MercadoPago SDK status:', {
-      sdkLoaded: !!window.MercadoPago,
-      publicKey: import.meta.env.VITE_MP_PUBLIC_KEY
-    });
-  }, []);
-
   return (
     <div>
-      {!isLoading ? (
-        <button
-          onClick={handlePago}
-          className="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded transition-colors duration-200 flex items-center justify-center"
-        >
-          Pagar con Mercado Pago
-        </button>
-      ) : (
-        <div className="flex items-center justify-center">
-          <span className="animate-spin mr-2">⌛</span>
-          Procesando...
+      <button
+        onClick={handlePago}
+        disabled={isLoading || disabled}
+        className={`w-full flex items-center justify-center px-4 py-3 border border-transparent text-base font-medium rounded-lg transition-all duration-200 ${
+          disabled
+            ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+            : 'bg-gradient-to-r from-[#009EE3] to-[#32B9ED] text-white hover:from-[#32B9ED] hover:to-[#009EE3] hover:shadow-lg transform hover:-translate-y-0.5'
+        } focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#009EE3] disabled:opacity-50 disabled:hover:transform-none`}
+      >
+        <div className="flex items-center space-x-2">
+          {isLoading ? (
+            <>
+              <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+              </svg>
+              <span>Procesando...</span>
+            </>
+          ) : (
+            <>
+              <svg className="w-6 h-6" viewBox="0 0 24 24" fill="none">
+                <path d="M19 14V6c0-1.1-.9-2-2-2H3c-1.1 0-2 .9-2 2v8c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zm-9-1c-1.66 0-3-1.34-3-3s1.34-3 3-3 3 1.34 3 3-1.34 3-3 3z" fill="currentColor"/>
+              </svg>
+              <span>Pagar con Mercado Pago</span>
+            </>
+          )}
         </div>
+      </button>
+      {error && (
+        <p className="mt-2 text-sm text-red-600 text-center">{error}</p>
       )}
-      {error && <p className="text-red-500 text-sm mt-2">{error}</p>}
-      <div className="cho-container"></div>
     </div>
   );
 }
-
-MercadoPagoButton.propTypes = {
-  user: PropTypes.shape({
-    id_usuario: PropTypes.number.isRequired,
-  }).isRequired,
-  producto: PropTypes.shape({
-    nombre_producto: PropTypes.string.isRequired,
-    descripcion: PropTypes.string.isRequired,
-    precio: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
-    condicion: PropTypes.string.isRequired,
-    id_categoria: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
-    imagenes: PropTypes.array
-  }).isRequired,
-};

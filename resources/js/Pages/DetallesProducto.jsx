@@ -4,7 +4,15 @@ import Navbar from '@/Layouts/Navbar';
 
 export default function DetallesProducto({ producto = {},auth }) {
   const [imagenPrincipal, setImagenPrincipal] = useState(0);
-
+const fechaFormateada = producto.usuario?.created_at
+  ? new Date(producto.created_at).toLocaleString('es-PE', {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+    })
+  : 'Fecha no disponible';
   return (
     <>
       <Head title={producto.nombre_producto} />
@@ -68,7 +76,7 @@ export default function DetallesProducto({ producto = {},auth }) {
                 </svg>
                 {producto.usuario?.direccion || 'Ubicación no especificada'}
               </span>
-              <span className="text-gray-500">Publicado hace 2 horas</span>
+              {/* <span className="text-gray-500">Publicado hace 2 horas</span> */}
             </div>
 
             {/* Botones de acción */}
@@ -91,9 +99,9 @@ export default function DetallesProducto({ producto = {},auth }) {
 
             {/* Información del vendedor */}
             <div className="border-t border-gray-200 pt-4">
-              <h2 className="text-lg font-semibold mb-2">Información del vendedor</h2>
+              <h2 className="text-lg font-semibold mb-2">Información</h2>
               <p><span className="font-medium">Nombre:</span> {producto.usuario?.nombre|| 'No especificado'} {producto.usuario?.apellido_paterno|| 'no especificado'} {producto.usuario?.apellido_materno|| 'no especificado'}</p>
-              <p><span className="font-medium">Miembro desde:</span> {producto.usuario?.created_at || 'Fecha no disponible'}</p>
+              <p><span className="font-medium">Fecha de la publicacion:</span> {fechaFormateada}</p>
             </div>
           </div>
         </div>

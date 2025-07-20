@@ -7,7 +7,7 @@ export default function CrearProductos({ categorias, auth }) {
   const [producto, setProducto] = useState({
     nombre_producto: "",
     descripcion: "",
-    precio: "3.00",
+    precio: "1.00",
     condicion: "nuevo",
     id_categoria: "",
     imagenes: [],
@@ -313,33 +313,56 @@ export default function CrearProductos({ categorias, auth }) {
                         </div>
                       )}
                       
-                      {precioValido && isValid ? (
-                        <div className="space-y-4">
-                          {usarSubidaGratis ? (
+                      <div className="space-y-4">
+                        {usarSubidaGratis ? (
+                          <div>
                             <button
                               onClick={handleSubidaGratis}
-                              className="w-full bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors"
+                              disabled={!isValid}
+                              className={`w-full px-4 py-3 rounded-lg transition-all duration-200 ${
+                                isValid 
+                                  ? 'bg-gradient-to-r from-[#59bcb1] to-[#59bcb1]/80 text-white hover:from-[#e47b5e] hover:to-[#e47b5e]/80 hover:shadow-lg transform hover:-translate-y-0.5'
+                                  : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                              } font-semibold shadow focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#59bcb1]`}
                             >
-                              Publicar Gratis
+                              {isValid ? 'Publicar Gratis' : 'Complete todos los campos'}
                             </button>
-                          ) : (
-                            <MercadoPagoButton 
-                              user={auth.user} 
-                              producto={producto}
-                            />
-                          )}
-                          <p className="text-sm text-gray-500 text-center">
-                            {usarSubidaGratis 
-                              ? "Al hacer clic en 'Publicar Gratis', usarás una de tus subidas gratuitas"
-                              : "Al hacer clic en 'Pagar', aceptas proceder con el pago de la publicación"
-                            }
-                          </p>
-                        </div>
-                      ) : formSubmitted && (
-                        <p className="text-red-500 text-sm font-medium text-center">
-                          Complete todos los campos requeridos para continuar.
-                        </p>
-                      )}
+                            <p className="mt-2 text-sm text-gray-600 text-center">
+                              {isValid 
+                                ? "Al hacer clic, usarás una de tus subidas gratuitas"
+                                : "Complete todos los campos requeridos"}
+                            </p>
+                          </div>
+                        ) : (
+                          <div>
+                            <div className={`transition-opacity duration-200 ${!isValid ? 'opacity-50' : 'opacity-100'}`}>
+                              <MercadoPagoButton 
+                                user={auth.user} 
+                                producto={producto}
+                                disabled={!isValid}
+                              />
+                            </div>
+                            <p className="mt-2 text-sm text-gray-600 text-center">
+                              {isValid 
+                                ? "Al continuar, aceptas proceder con el pago de S/ 3.00"
+                                : "Complete todos los campos requeridos"}
+                            </p>
+                          </div>
+                        )}
+                        
+                        {formSubmitted && !isValid && (
+                          <div className="p-3 bg-red-50 border border-red-200 rounded-lg">
+                            <p className="text-sm text-red-600 text-center font-medium">
+                              Por favor, complete todos los campos requeridos:
+                            </p>
+                            <ul className="mt-2 text-sm text-red-500 list-disc list-inside">
+                              {Object.entries(errors).map(([field, error]) => (
+                                <li key={field}>{error}</li>
+                              ))}
+                            </ul>
+                          </div>
+                        )}
+                      </div>
                     </div>
                   </div>
                 </div>

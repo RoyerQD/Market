@@ -7,6 +7,8 @@ use App\Http\Controllers\PagoController;
 use App\Http\Controllers\ProductoController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ReniecController;
+use App\Http\Controllers\SoporteController;
+use App\Http\Controllers\LibroReclamacionesController;
 use App\Models\Destacados;
 use GuzzleHttp\Handler\Proxy;
 use Illuminate\Foundation\Application;
@@ -48,6 +50,15 @@ Route::middleware('auth')->group(function () {
 });
 
 //VISTA QUE UTILIZARE PARA VER EL PERFIL
+
+// Rutas de Soporte
+Route::get('/soporte', [SoporteController::class, 'index'])->name('soporte');
+Route::post('/soporte/enviar', [SoporteController::class, 'enviarMensaje'])->name('soporte.enviar');
+
+// Rutas del Libro de Reclamaciones
+Route::get('/libro-reclamaciones', [LibroReclamacionesController::class, 'index'])->name('libro-reclamaciones');
+Route::post('/libro-reclamaciones', [LibroReclamacionesController::class, 'store'])->name('libro-reclamaciones.store');
+
 Route::middleware(['auth', 'verified'])->get('/Dashboard', function () {
     return Inertia::render('Dashboard');
 })->name('dashboard');
@@ -72,6 +83,14 @@ Route::get('/producto/{id}', [ProductoController::class, 'show'])->name('product
 Route::middleware(['auth'])->group(function () {
     //VISTA DETALLES MIS VENTAS 
     Route::get('/mis-ventas', [ProductoController::class, 'misVentas'])->name('productos.misVentas');
+    Route::post('/productos/ocultar/{producto}', [ProductoController::class, 'ocultar'])
+        ->name('productos.ocultar');
+    Route::post('/productos/despausar/{producto}', [ProductoController::class, 'despausar'])
+        ->name('productos.despausar');
+    Route::post('/productos/marcar-vendido/{producto}', [ProductoController::class, 'marcarVendido'])
+        ->name('productos.marcarVendido');
+    Route::post('/productos/editar/{producto}', [ProductoController::class, 'editar'])
+        ->name('productos.editar');
     //VISTA PRODUCTOS DESTACADOS
     Route::get('/mis-destacados', [ProductoController::class, 'misDestacados'])->name('productos.misDestacados');
     Route::post('/productos/agregar-destacado/{producto}', [ProductoController::class, 'agregarDestacado'])

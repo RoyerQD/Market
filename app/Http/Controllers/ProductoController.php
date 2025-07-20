@@ -120,7 +120,7 @@ class ProductoController extends Controller
                                 "title" => "Publicación de producto",
                                 "quantity" => 1,
                                 "currency_id" => "PEN",
-                                "unit_price" => 1.00
+                                "unit_price" => 3.00
                             )
                         )
                     );
@@ -302,6 +302,7 @@ class ProductoController extends Controller
                             ? asset('storage/' . $producto->fotos->first()->ruta)
                             : '/default.jpg',
                     'es_destacado' => $destacado ? true : false,
+                    'estado_producto' => ucfirst($producto->estado_producto),
                     'fecha_inicio' => $destacado ? $destacado->fecha_inicio->format('d/m/Y') : null,
                     'fecha_fin' => $destacado ? $destacado->fecha_fin->format('d/m/Y') : null,
                     'tiempo_restante' => $destacado && $destacado->fecha_fin->isFuture()
@@ -389,6 +390,7 @@ public function misVentas()
                         'visualizaciones' => rand(10, 100),
                         'mensajes' => rand(1, 10),
                         'comprador_nombre' => 'María G.',
+                        'created_at' => $producto->created_at->format('d/m/Y H:i'),
                     ];
                 });
 
@@ -576,4 +578,36 @@ public function subirProductoGratis(Request $request)
         Log::info('Webhook de Mercado Pago recibido', ['data' => $request->all()]);
         return response()->json(['status' => 'ok']);
     }
+    public function ocultar($id)
+{
+    $producto = Producto::findOrFail($id);
+    $producto->estado_producto = 'pausado';
+    $producto->save();
+    return response()->json(['message' => 'Producto ocultado']);
+}
+
+public function marcarVendido($id)
+{
+    $producto = Producto::findOrFail($id);
+    $producto->estado_producto = 'vendido';
+    $producto->save();
+    return response()->json(['message' => 'Producto marcado como vendido']);
+}
+
+public function editar(Request $request, $id)
+{
+    $producto = Producto::findOrFail($id);
+    $producto->nombre_producto = $request->nombre_producto;
+    $producto->precio = $request->precio;
+    $producto->save();
+    return response()->json(['message' => 'Producto actualizado']);
+}
+
+public function despausar($id)
+{
+    $producto = Producto::findOrFail($id);
+    $producto->estado_producto = 'disponible';
+    $producto->save();
+    return response()->json(['message' => 'Producto disponible nuevamente']);
+}
 }

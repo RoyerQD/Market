@@ -34,7 +34,7 @@ public function index()
     return Inertia::render('Pagos/Index', [
         'pagos' => $pagos,
         'auth' => [
-            'user' => auth()->user(),
+            'user' => auth(),
         ],
     ]);
 }

@@ -1,6 +1,6 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head } from '@inertiajs/react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import PagoPaypalDestacado from '@/Components/PagoPaypalDestacado';
 import { PayPalScriptProvider } from '@paypal/react-paypal-js';
 
@@ -8,6 +8,11 @@ export default function MisDestacados({ productos=[], auth }) {
   const [showModal, setShowModal] = useState(false);
   const [productoSeleccionado, setProductoSeleccionado] = useState(null);
   const [semanas, setSemanas] = useState(1);
+
+  useEffect(() => {
+    console.log('Productos recibidos:', productos);
+    console.log('Estados únicos:', [...new Set(productos.map(p => p.estado_producto))]);
+  }, [productos]);
 
   const abrirModal = (producto) => {
     setProductoSeleccionado(producto);
@@ -41,10 +46,22 @@ export default function MisDestacados({ productos=[], auth }) {
       <Head title="MisDestacados" />
 
       <div className="py-12 max-w-6xl mx-auto px-4">
-        {productos.length === 0 ? (
-          <p className="text-gray-600">No tienes productos.</p>
-        ) : (
-          productos.map((producto) => (
+        {(() => {
+          // Filtrar productos que estén disponibles (ignorando mayúsculas/minúsculas)
+          const productosDisponibles = productos.filter(producto => 
+            producto.estado_producto.toLowerCase() === 'disponible'
+          );
+          
+          console.log('Todos los productos:', productos); // Para debugging
+          console.log('Productos disponibles:', productosDisponibles); // Para debugging
+          
+          if (productos.length === 0) {
+            return <p className="text-gray-600">No tienes productos.</p>;
+          } else if (productosDisponibles.length === 0) {
+            return <p className="text-gray-600">No tienes productos disponibles para destacar.</p>;
+          }
+          
+          return productosDisponibles.map((producto) => (
             <div
               key={producto.id_producto}
               className="bg-white p-6 mb-4 rounded-lg shadow flex items-center justify-between"
@@ -81,8 +98,8 @@ export default function MisDestacados({ productos=[], auth }) {
                 {producto.es_destacado ? 'Editar Destacado' : 'Agregar Destacado'}
               </button>
             </div>
-          ))
-        )}
+          ));
+        })()}
       </div>
 
       {/* MODAL */}
